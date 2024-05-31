@@ -220,10 +220,17 @@ exports.getUser = async (req, res) => {
 
 
 exports.getUserById = asyncHandler(async(req,res)=>{
+<<<<<<< HEAD
     const {id, userId} = req.params
     console.log(req.params, 'the id is here')
     try{
         const response = await userModel.findById(id, userId)
+=======
+    const {id} = req.params
+    // console.log(req.params, 'the id is here')
+    try{
+        const response = await userModel.findById(id)
+>>>>>>> ff95500ddab3191d4ff1795f766fbda0df4ce71b
         res.status(200).json(response)
     }catch(err){
         console.log(err)

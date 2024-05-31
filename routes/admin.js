@@ -38,8 +38,12 @@ const adminController = require('../Controller/adminController')
 const planOrderController = require('../Controller/planOrderController')
 const pendingOrdersController = require('../Controller/pendingOrderController')
 
+<<<<<<< HEAD
 
 
+=======
+const sendPushNotification = require('../sendNotification');
+>>>>>>> ff95500ddab3191d4ff1795f766fbda0df4ce71b
 
 
 // admin -----------------------------
@@ -92,10 +96,20 @@ router.get('/getallstatus',verifyToken,planOrderController.getAllStatus)
 router.get('/getactiveusers',verifyToken,planOrderController.getActiveStatus)
 // pending orders ----------------
 
+<<<<<<< HEAD
 // notificationControlles.module..................
 
 
 
+=======
+router.post('/send-notification', (req, res) => {
+    const { token, title, body, link } = req.body;
+  
+    sendPushNotification(token, title, body, link);
+  
+    res.send('Notification sent!');
+  });
+>>>>>>> ff95500ddab3191d4ff1795f766fbda0df4ce71b
 // router.post('/creatependingorder',verifyToken,pendingOrdersController.postPendingOrder)
 // router.get('/getpendingorder',verifyToken,pendingOrdersController.getPendingOrder)
 // router.post('/updatependingorderstatus',verifyToken,pendingOrdersController.updatePendingOrderStatus)
