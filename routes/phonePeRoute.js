@@ -64,7 +64,8 @@ paytmChecksum.then(function(checksum){
         ...paytmParams,
         CHECKSUMHASH: checksum,
     };
-
+     
+    // console.log()
     res.json(params)
     console.log("generateSignature Returns: " + checksum);
 }).catch(function(error){
