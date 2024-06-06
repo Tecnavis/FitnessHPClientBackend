@@ -13,7 +13,8 @@ const userModel = new mongoose.Schema({
     plan:{type:String},
     token:{type: String},
     revealed:{type:Boolean, default:false},
-    authenticate:{type:Boolean, default:false}
+    authenticate:{type:Boolean, default:false},
+    newUser:{type:Boolean, default:false}
 })
 
 userModel.pre('save', async function (next) {

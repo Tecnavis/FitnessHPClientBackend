@@ -1,6 +1,10 @@
 const asyncHandler = require('express-async-handler');
 const Razorpay = require('razorpay');
 const crypto = require('crypto')
+const userModel = require('../Model/userModel')
+const planOrderModel = require('../Model/plandOrderModel');
+const moment = require('moment');
+
 
 const razorpayKeyId = 'rzp_test_RP9jKB0e45QR7x'
 const razorpayKeySecret = 'tJ3FfCssvJOJfHejrzBXiK5H'
@@ -29,8 +33,8 @@ exports.order = asyncHandler(async(req,res) => {
 })
 
 exports.validate = asyncHandler(async(req,res)=>{
-    const {razorpay_order_id, razorpay_payment_id, razorpay_signature} = req.body
-
+    const {razorpay_order_id, razorpay_payment_id, razorpay_signature, userId, planId, name, amount, duration, userName, modeOfPayment} = req.body
+    console.log(req.body,'the reqbody')
     const sha = crypto.createHmac("sha256", razorpayKeySecret);
     // order_id + " | " + razorpay_payment_id
 
@@ -41,6 +45,19 @@ exports.validate = asyncHandler(async(req,res)=>{
     if (digest!== razorpay_signature) {
         return res.status(400).json({msg: " Transaction is not legit!"});
     }
-
+    const expiryDate = moment().add(duration, 'months').toDate();// Assuming you set the expiry date here
+    
+    await planOrderModel.create({ 
+        userId, 
+        planId, 
+        name, 
+        amount, 
+        duration, 
+        expiryDate, 
+        modeOfPayment, 
+        userName, 
+        activeStatus: 'Active', 
+        showUser: true 
+    });
     res.json({msg: " Transaction is legit!", orderId: razorpay_order_id,paymentId: razorpay_payment_id});
 })

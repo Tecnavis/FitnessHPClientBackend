@@ -4,11 +4,62 @@ const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
+const { postsignin } = require('./adminController');
 
 
 
 
 
+exports.onlineUser = asyncHandler(async (req, res) => {
+    const { name, phone, password, height, weight, dateOfBirth, blood, email, modeOfPayment, planId, planName, amount, duration} = req.body; 
+    const image = req.file ? req.file.filename : undefined;
+    
+    try {
+        // Validate inputs
+        if (!name || !phone || !password || !height || !weight || !dateOfBirth || !blood || !email) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+        
+        // Check if the phone number already exists
+        const existingUser = await userModel.findOne({ phone });
+        if (existingUser) {
+            return res.status(409).json({ message: "Phone number already exists" });
+        }
+        const expiryDate = moment().add(duration, 'months').toDate();
+        
+        // Create the user
+        const newUser = await userModel.create({
+            image,
+            name,
+            phone,
+            password,
+            height,
+            weight,
+            dateOfBirth,
+            blood,
+            email,
+            authenticate: true,
+            newUser:true,
+        });
+        
+        
+        // Log the successful creation
+        // console.log("New user created:", newUser, newPlanOrder);
+
+        // Respond with success message and the created user
+        res.status(200).json({
+            message: 'User posted successfully',
+            user: newUser
+        });
+        
+    } catch (err) {
+        // Log the error
+        console.error("Error posting user:", err);
+
+        // Respond with a generic error message
+        res.status(500).json({ message: 'An error occurred while posting user' });
+    }
+});
 exports.postUser = asyncHandler(async (req, res) => {
     const { name, phone, password, height, weight, dateOfBirth, blood, email, modeOfPayment, planId, planName, amount, duration} = req.body; 
     const image = req.file ? req.file.filename : undefined;
@@ -183,6 +234,7 @@ exports.userPostSignIn = asyncHandler(async(req, res) => {
             duration: postSignin.duration,
             expiryDate: postSignin.expiryDate,
             activeStatus: postSignin.activeStatus,
+            newUser: postSignin.newUser
         };
         console.log(postSignin.image, " the image is ")
 
